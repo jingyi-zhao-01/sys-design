@@ -1,0 +1,10 @@
+fastapi
+pydantic
+uvicorn
+pytest
+pytest-asyncio
+httpx
+# Multi-tenant specific
+redis
+sqlalchemy
+alembic

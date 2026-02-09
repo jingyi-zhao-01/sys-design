@@ -1,0 +1,8 @@
+fastapi
+pydantic
+uvicorn
+pytest
+pytest-asyncio
+httpx
+# Policy specific
+opa-python-client

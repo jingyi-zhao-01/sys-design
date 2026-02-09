@@ -1,0 +1,51 @@
+[project]
+name = "enterprise-design-solutions"
+version = "0.1.0"
+description = "Monolithic repository for Enterprise Design Solutions"
+dependencies = [
+    "fastapi",
+    "pydantic",
+    "uvicorn",
+    "httpx",
+    "python-jose[cryptography]",
+    "passlib[bcrypt]",
+    "cryptography",
+    "sqlmodel",
+    "asyncpg",
+    "authlib",
+    "opa-python-client",
+    "redis",
+    "sqlalchemy",
+    "alembic",
+]
+requires-python = ">=3.10"
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-asyncio",
+    "ruff",
+    "mypy",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["design-enterprise-solutions"]
+pythonpath = [
+    ".",
+    "design-enterprise-solutions/compliance-auditability/src",
+    "design-enterprise-solutions/identity-and-access-plane/src",
+    "design-enterprise-solutions/multi-tenant-control-plane/src",
+    "design-enterprise-solutions/policy-governance-engine/src",
+]
+asyncio_mode = "auto"
+norecursedirs = [".git", "__pycache__", "build", "dist"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
