@@ -17,4 +17,8 @@ Must provide:
 - Simulation / dry-run
 - Policy distribution to enforcement points
 
+## Operational Edge Cases
+- **Policy Conflicts**: Automated resolution rules for overlapping or contradictory policies (e.g., Deny-takes-precedence).
+- **Emergency Override**: Ability to inject temporary, time-bound "break-glass" policies during active security incidents.
+
 > Notes: Support safe rollout primitives and policy testing tooling.

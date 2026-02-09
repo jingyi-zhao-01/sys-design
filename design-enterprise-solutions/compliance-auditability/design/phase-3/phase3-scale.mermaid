@@ -1,0 +1,46 @@
+---
+config:
+  theme: 'neutral'
+---
+
+
+graph TD
+    subgraph AppNode [Application Layer]
+        App[Service API] --> SDK[Audit SDK Wrapper]
+    end
+
+    subgraph AuditNode [Audit Service - Phase 3: High Throughput & Search]
+        SDK -- "1. Sanitized Event" --> API[Ingest API]
+        
+        subgraph StreamLayer [Async Stream & Buffer]
+            API -- "2. Async Produce" --> Kafka{Message Stream - Kafka/Kinesis}
+        end
+
+        subgraph StorageLayer [Persistence & Search]
+            Kafka -- "3a. Batch Write" --> S3[Archival & Integrity - S3 WORM]
+            Kafka -- "3b. Index Event" --> OS[(OpenSearch / ELK)]
+        end
+
+        subgraph IntegrityVerification [Integrity Path]
+            S3 -- "4. Recalculate Chain" --> Verifier[Integrity Verifier]
+        end
+
+        subgraph Consumption [Search & Export]
+            Admin[Security Auditor] --> SearchAPI[Unified Search API]
+            SearchAPI -- "5a. Hot/Warm Query" --> OS
+            SearchAPI -- "5b. Cold Evidence" --> S3
+        end
+    end
+
+    style StreamLayer fill:#f3e5f5,stroke:#7b1fa2
+    style StorageLayer fill:#e8f5e9,stroke:#2e7d32
+    style Kafka fill:#fff9c4,stroke:#fbc02d,stroke-width:2px
+    style OS fill:#e1f5fe,stroke:#01579b
+    
+    %% Annotations
+    Note1["Stream: Decouples App latency from Audit persistence"]
+    Note2["OpenSearch: Optimized for p99 search and aggregation"]
+    Note3["S3 WORM: The source of truth for compliance/integrity"]
+    Kafka -.-> Note1
+    OS -.-> Note2
+    S3 -.-> Note3

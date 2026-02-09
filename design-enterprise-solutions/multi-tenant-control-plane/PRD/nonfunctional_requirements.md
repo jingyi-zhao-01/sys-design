@@ -11,6 +11,10 @@ Heavily weighted toward:
 - Disaster recovery
 - Backward compatibility across versions
 
+## Service Level Objectives (SLOs)
+- **Provisioning Time (p90)**: End-to-end tenant setup (from request to "Ready") < 2 minutes.
+- **API Availability**: 99.95% uptime for the Control Plane management APIs.
+
 **Operational considerations:**
 - Ensure quotas and metering are robust under scale
 - Provide strong tenant isolation (resource, data, and control plane)

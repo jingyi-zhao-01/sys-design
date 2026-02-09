@@ -1,0 +1,28 @@
+---
+config:
+  theme: 'neutral'
+---
+
+
+graph TD
+    subgraph AppNode [Application Layer]
+        App[Service API] --> SDK[Audit SDK Wrapper]
+    end
+
+    subgraph AuditNode [Audit Service - Phase 1]
+        SDK -- "1. Send JSON Event (Sanitized)" --> API[Ingest API]
+        API -- "2. Synchronous Write" --> DB[(Relational DB)]
+        
+        DB -- "3. Filtered Select" --> Search[Search API]
+    end
+
+    Admin[Security Auditor] --> Search
+
+    style SDK fill:#f96,stroke:#333,stroke-width:2px
+    style DB fill:#bbf,stroke:#333,stroke-width:2px
+    
+    %% Annotations
+    Note1[SDK: Redacts credentials/PII before transmission]
+    Note2[DB: Simple SQL table with unique EventID]
+    API -.-> Note1
+    DB -.-> Note2

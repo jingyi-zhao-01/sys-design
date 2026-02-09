@@ -17,4 +17,8 @@ The platform must enable:
 - Chain of custody
 - Forensics tooling
 
+## Operational Edge Cases
+- **Legal Hold**: Capability to freeze deletion for specific logs or tenants regardless of standard retention policy.
+- **PII Redaction**: Post-hoc redaction tool for removing accidental sensitive data while preserving log integrity.
+
 > Notes: Provide tooling to assemble audit evidence packages for regulators and security teams.

@@ -14,6 +14,11 @@ Expect strong emphasis on:
 - Horizontal scalability
 - Multi-region survivability
 
+## Service Level Objectives (SLOs)
+- **Availability**: 99.99% uptime for the authentication and evaluation endpoints.
+- **Latency (p99)**: AuthN requests < 50ms; AuthZ check requests < 10ms.
+- **Revocation Propagation**: Revoked tokens/permissions must be globally effective within < 30 seconds.
+
 **Operational considerations:**
 - Plan for IdP failure modes and graceful degradation
 - Minimize blast radius of stale permissions

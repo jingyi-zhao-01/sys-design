@@ -1,0 +1,39 @@
+---
+config:
+  theme: 'neutral'
+---
+
+
+graph TD
+    subgraph AppNode [Application Layer]
+        App[Service API] --> SDK[Audit SDK Wrapper]
+    end
+
+    subgraph AuditNode [Audit Service - Phase 2: Integrity]
+        SDK -- "1. Sanitized Event" --> API[Ingest API]
+        
+        subgraph IntegrityCore [Integrity & Persistence]
+            API --> Hasher[Hasher & Chainer]
+            Hasher -- "2. Event + PrevHash" --> DB[(Relational DB)]
+            Hasher -- "3. Root Hash" --> WORM[S3 Object Lock / WORM]
+        end
+
+        subgraph Verification [Audit & Trust]
+            KMS[KMS / Signing Key] --> Signer[Daily Signer]
+            Signer -- "4. Signed Digest" --> Proof[Immutable Ledger]
+            Verifier[Integrity Verifier] -- "5. Recalculate Hashes" --> DB
+            Verifier -- "Verify Consistency" --> Proof
+        end
+    end
+
+    style IntegrityCore fill:#e1f5fe,stroke:#01579b
+    style Verification fill:#fff3e0,stroke:#e65100
+    style WORM fill:#c8e6c9,stroke:#2e7d32
+    
+    %% Annotations
+    Note1["Hasher: H(n) = SHA256(Event(n) + H(n-1))"]
+    Note2["WORM: Write Once Read Many storage"]
+    Note3["Verifier: Detects if any historical row was altered or deleted"]
+    Hasher -.-> Note1
+    WORM -.-> Note2
+    Verifier -.-> Note3
