@@ -1,5 +1,5 @@
 import os
-from .common.models.event import AuditEvent
+from src.common.models.event import AuditEvent
 
 
 class AuditRepository:

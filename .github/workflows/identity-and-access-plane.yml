@@ -25,12 +25,7 @@ jobs:
           enable-cache: true
 
       - name: Install Dependencies
-        run: uv sync --all-extras --dev
+        run: make install
 
       - name: Run Pytest
-        run: |
-          if [ -d "design-enterprise-solutions/identity-and-access-plane/__test__" ]; then
-            uv run pytest design-enterprise-solutions/identity-and-access-plane/__test__
-          else
-            echo "No tests found yet."
-          fi
+        run: make test-iam

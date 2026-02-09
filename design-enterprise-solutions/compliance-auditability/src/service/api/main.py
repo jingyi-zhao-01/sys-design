@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Depends, Request
-from .common.models.event import AuditEvent
-from .service.db.repository import AuditRepository
+from src.common.models.event import AuditEvent
+from src.service.db.repository import AuditRepository
 
 app = FastAPI(title="Audit Ingest API - Phase 1")
 

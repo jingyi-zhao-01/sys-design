@@ -1,7 +1,7 @@
 import logging
 import json
 from typing import Any, Dict, List
-from .common.models.event import AuditEvent, Outcome
+from src.common.models.event import AuditEvent, Outcome
 
 
 class AuditSDK:

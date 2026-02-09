@@ -33,10 +33,10 @@ dev = [
 testpaths = ["design-enterprise-solutions"]
 pythonpath = [
     ".",
-    "design-enterprise-solutions/compliance-auditability/src",
-    "design-enterprise-solutions/identity-and-access-plane/src",
-    "design-enterprise-solutions/multi-tenant-control-plane/src",
-    "design-enterprise-solutions/policy-governance-engine/src",
+    "design-enterprise-solutions/compliance-auditability",
+    "design-enterprise-solutions/identity-and-access-plane",
+    "design-enterprise-solutions/multi-tenant-control-plane",
+    "design-enterprise-solutions/policy-governance-engine",
 ]
 asyncio_mode = "auto"
 norecursedirs = [".git", "__pycache__", "build", "dist"]

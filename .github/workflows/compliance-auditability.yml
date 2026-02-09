@@ -25,8 +25,7 @@ jobs:
           enable-cache: true
 
       - name: Install Dependencies
-        run: uv sync --all-extras --dev
+        run: make install
 
       - name: Run Pytest
-        run: |
-          uv run pytest design-enterprise-solutions/compliance-auditability/__test__
+        run: make test-audit
