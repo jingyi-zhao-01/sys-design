@@ -1,0 +1,162 @@
+---
+config:
+  theme: 'neutral'
+---
+
+
+
+flowchart TB
+
+    %% Main body row: left-to-right columns
+    subgraph Body[" "]
+        direction LR
+
+        %% Left column
+        subgraph Left[" "]
+            direction TB
+            subgraph Clients["Core Module: Client Applications"]
+                direction LR
+                SDK[/"SDKs & Libraries"/]
+                APP[/"Applications"/]
+            end
+
+            subgraph Policy["Core Module: Internal Governance / Policy Layer"]
+                direction LR
+                ACCESS["Tenant & Access Controls"]
+                BUDGET["Budget Enforcement"]
+                ALLOWLIST["Model Allow / Deny Lists"]
+                AUDIT["Audit Logs"]
+            end
+
+            subgraph Policy2["Core Module: Interval Governance / Policy Layer"]
+                direction LR
+                ACCESS2["Tenant & Access Controls"]
+                BUDGET2["Budget Enforcement"]
+                ALLOWLIST2["Model Allow / Deny Lists"]
+                AUDIT2["Audit Logs"]
+            end
+        end
+
+        %% Center column (routing decision + OpenRouter)
+        subgraph Center[" "]
+            direction TB
+            ROUTE_DEC{"Gateway / Client\nRoute Decision"}
+            ROUTE_SPLIT["Direct Route\n(lower latency)  |  (Optional) Gateway Route"]
+
+            subgraph OpenRouter["Core Module: OpenRouter Policy Routing Platform"]
+                direction LR
+                subgraph RoutingLogic["Core Module: Routing Logic"]
+                    direction TB
+                    QUEUE["Request Queue"]
+                    AVAIL["Availability Signals"]
+                    PERF["Performance Metrics"]
+                    PREF["Provider Preferences"]
+                    DOC_ROUTE["Docs: Provider Routing / Selection"]
+                end
+
+                subgraph RoutingEngine["Core Module: Routing Engine"]
+                    direction TB
+                    COST["Cost & Policy Optimizer"]
+                    ROUTER["Policy-Driven Model\nRouting"]
+                    LB["Provider Load Balancer"]
+                    DOC_API["Docs: API Reference Overview"]
+                end
+            end
+
+            subgraph Edge["Core Module: Edge Layer / OpenRouter Workers"]
+                direction LR
+                API["Unified API Endpoint\n(OpenAI-style API)"]
+                AUTH["Authentication / Authorization"]
+                DOC_LAT["Docs: Latency & Performance"]
+            end
+        end
+
+        %% Right column
+        subgraph Right[" "]
+            direction TB
+            subgraph CFGateway["Core Module: Cloudflare AI Gateway (Optional)"]
+                direction TB
+                AIGW["AI Gateway Proxy"]
+                CACHE["Response Caching"]
+                RATELIMIT["Rate Limiting"]
+                DOC_AIGW["Docs: Cloudflare AI Gateway Operations"]
+            end
+
+            subgraph Providers["Core Module: Provider Pool"]
+                direction TB
+                subgraph Tier2["Additional Providers"]
+                    direction TB
+                    META["Meta"]
+                    COHERE["Cohere"]
+                    MISTRAL["Mistral"]
+                    DOC_CF_ANN["Docs: Cloudflare Provider Announcements"]
+                end
+
+                subgraph Tier1["Primary Providers"]
+                    direction TB
+                    OPENAI["OpenAI"]
+                    ANTHROPIC["Anthropic"]
+                    GOOGLE["Google"]
+                    DOC_CF_PROV["Docs: Cloudflare Provider Catalog"]
+                end
+            end
+        end
+    end
+
+    %% Flows
+    SDK --> ROUTE_DEC
+    APP --> ROUTE_DEC
+    ROUTE_DEC --> ROUTE_SPLIT
+    ROUTE_SPLIT --> API
+    ROUTE_SPLIT -.-> AIGW
+    AIGW --> CACHE --> RATELIMIT --> API
+
+    API --> AUTH --> ROUTER
+    COST --> ROUTER
+    ROUTER --> LB
+    LB --> Providers
+
+    QUEUE -.-> ROUTER
+    AVAIL -.-> ROUTER
+    PERF -.-> ROUTER
+    PREF -.-> ROUTER
+    Policy -.-> ROUTER
+    Policy2 -.-> ROUTER
+
+    %% Legend
+    subgraph Legend[" "]
+        direction LR
+        L1["Direct Route (lower latency)"]
+        L2["(Optional) Gateway Route"]
+    end
+    L1 --- API
+    L2 -.-> AIGW
+
+    %% Clickable references
+    click DOC_API "https://openrouter.ai/docs/api/reference/overview" "API Reference Overview"
+    click DOC_ROUTE "https://openrouter.ai/docs/guides/routing/provider-selection" "Provider Routing"
+    click DOC_LAT "https://openrouter.ai/docs/guides/best-practices/latency-and-performance" "Latency & Performance"
+    click DOC_AIGW "https://developers.cloudflare.com/ai-gateway/usage/providers/openrouter/" "AI Gateway OpenRouter"
+    click DOC_CF_PROV "https://openrouter.ai/provider/cloudflare" "Cloudflare Provider Catalog"
+    click DOC_CF_ANN "https://openrouter.ai/announcements/introducing-cloudflare-as-a-new-provider" "Cloudflare as Provider"
+
+    %% Styling
+    classDef clientStyle fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    classDef policyStyle fill:#fff8e1,stroke:#f9a825,stroke-width:1.5px
+    classDef edgeStyle fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef coreStyle fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    classDef providerStyle fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+    classDef cfStyle fill:#fce4ec,stroke:#c2185b,stroke-width:2px
+    classDef docStyle fill:#ffffff,stroke:#607d8b,stroke-width:1.5px,stroke-dasharray: 5 3
+    classDef decisionStyle fill:#fffde7,stroke:#f57f17,stroke-width:2px
+    classDef legendStyle fill:#fffde7,stroke:#c0a000,stroke-width:1.5px
+
+    class SDK,APP clientStyle
+    class ACCESS,BUDGET,ALLOWLIST,AUDIT,ACCESS2,BUDGET2,ALLOWLIST2,AUDIT2 policyStyle
+    class API,AUTH edgeStyle
+    class ROUTER,LB,COST coreStyle
+    class OPENAI,ANTHROPIC,GOOGLE,META,MISTRAL,COHERE providerStyle
+    class AIGW,CACHE,RATELIMIT cfStyle
+    class DOC_API,DOC_ROUTE,DOC_LAT,DOC_AIGW,DOC_CF_PROV,DOC_CF_ANN docStyle
+    class ROUTE_DEC decisionStyle
+    class L1,L2 legendStyle
