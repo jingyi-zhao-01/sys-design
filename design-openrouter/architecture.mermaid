@@ -1,0 +1,102 @@
+flowchart TB
+    subgraph Clients["Client Applications"]
+        APP[/"Applications"/]
+        SDK[/"SDKs & Libraries"/]
+    end
+
+    subgraph CFGateway["Cloudflare AI Gateway (Optional)"]
+        AIGW["AI Gateway Proxy"]
+        CACHE["Response Caching"]
+        RATELIMIT["Rate Limiting"]
+    end
+
+    subgraph OpenRouter["OpenRouter Platform"]
+        subgraph Edge["Edge Layer (Cloudflare Workers)"]
+            API["Unified API Endpoint<br/>/api/v1/chat/completions"]
+            AUTH["Authentication<br/>& API Keys"]
+        end
+        
+        subgraph Core["Routing Engine"]
+            ROUTER["Intelligent Router"]
+            LB["Load Balancer"]
+            FALLBACK["Fallback Controller"]
+            COST["Cost Optimizer"]
+        end
+        
+        subgraph Routing["Routing Logic"]
+            PREF["Provider Preferences"]
+            PERF["Performance Metrics"]
+            AVAIL["Availability Monitor"]
+            QUEUE["Request Queue"]
+        end
+    end
+
+    subgraph Providers["LLM Providers"]
+        subgraph Tier1["Primary Providers"]
+            OPENAI["OpenAI<br/>GPT-4, GPT-3.5"]
+            ANTHROPIC["Anthropic<br/>Claude 3.x"]
+            GOOGLE["Google<br/>Gemini"]
+        end
+        
+        subgraph Tier2["Additional Providers"]
+            META["Meta<br/>Llama"]
+            MISTRAL["Mistral AI"]
+            COHERE["Cohere"]
+        end
+        
+        subgraph CFProvider["Cloudflare Workers AI"]
+            CFAI["Cloudflare Models<br/>@cf/meta, @cf/mistral"]
+        end
+    end
+
+    %% Client connections
+    APP --> AIGW
+    SDK --> AIGW
+    APP -.->|"Direct"| API
+    SDK -.->|"Direct"| API
+    
+    %% AI Gateway to OpenRouter
+    AIGW --> CACHE
+    CACHE --> RATELIMIT
+    RATELIMIT --> API
+    
+    %% Edge processing
+    API --> AUTH
+    AUTH --> ROUTER
+    
+    %% Routing engine flow
+    ROUTER --> LB
+    ROUTER --> FALLBACK
+    ROUTER --> COST
+    
+    LB <--> PREF
+    LB <--> PERF
+    FALLBACK <--> AVAIL
+    COST <--> QUEUE
+    
+    %% Provider connections
+    LB --> OPENAI
+    LB --> ANTHROPIC
+    LB --> GOOGLE
+    LB --> META
+    LB --> MISTRAL
+    LB --> COHERE
+    LB --> CFAI
+    
+    %% Fallback paths
+    FALLBACK -.->|"On Failure"| OPENAI
+    FALLBACK -.->|"On Failure"| ANTHROPIC
+    FALLBACK -.->|"On Failure"| CFAI
+
+    %% Styling
+    classDef clientStyle fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    classDef edgeStyle fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef coreStyle fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    classDef providerStyle fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+    classDef cfStyle fill:#fce4ec,stroke:#c2185b,stroke-width:2px
+    
+    class APP,SDK clientStyle
+    class API,AUTH edgeStyle
+    class ROUTER,LB,FALLBACK,COST coreStyle
+    class OPENAI,ANTHROPIC,GOOGLE,META,MISTRAL,COHERE providerStyle
+    class AIGW,CACHE,RATELIMIT,CFAI cfStyle
