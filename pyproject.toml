@@ -28,6 +28,9 @@ dev = [
     "ruff",
     "mypy",
 ]
+sharding = [
+    "psycopg2-binary>=2.9.9",
+]
 
 [tool.pytest.ini_options]
 testpaths = ["design-enterprise-solutions"]
